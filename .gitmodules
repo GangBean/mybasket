@@ -1,0 +1,9 @@
+[submodule "mybasket_web"]
+	path = mybasket_web
+	url = https://github.com/GangBean/mybasket_web.git
+[submodule "mybasket_ml"]
+	path = mybasket_ml
+	url = https://github.com/GangBean/mybasket_ml.git
+[submodule "mybasket_batch"]
+	path = mybasket_batch
+	url = https://github.com/GangBean/mybasket_batch.git
