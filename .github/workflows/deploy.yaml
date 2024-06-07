@@ -61,7 +61,7 @@ jobs:
           for dir in ${target_dirs[@]}
             do
               echo "[CD] $dir application image build..."
-              if [ $dir -eq web ]; then
+              if [ $dir == web ]; then
                 docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web/front:latest ./web/front
                 docker push ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web/front:latest
                 docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web/back:latest ./web/back
@@ -95,17 +95,17 @@ jobs:
           for dir in ${target_dirs[@]}
             do
               echo "[CD] $dir application deploy..."
-              if [$dir -eq web]; then
+              if [$dir == web]; then
                 echo "[CD] Deploy Web App"
                 gcloud compute ssh ${GCP_SSH_USERNAME}@$app-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web/front:latest && docker stop front-app || true && docker rm front-app || true && docker run -d --name front-app -p 80:80 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web/front:latest"
                 gcloud compute ssh ${GCP_SSH_USERNAME}@$app-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web/back:latest && docker stop back-app || true && docker rm back-app || true && docker run -d --name back-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web/back:latest"
-              elif [$dir -eq database]; then
+              elif [$dir == database]; then
                 echo "[CD] Deploy DB App"
                 gcloud compute ssh ${GCP_SSH_USERNAME}@$database-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-database:latest && docker stop db-app || true && docker rm db-app || true && docker run -d --name db-app -p 3306:3306 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-db:latest"
-              elif [$dir -eq ml]; then
+              elif [$dir == ml]; then
                 echo "[CD] Deploy ML App"
                 gcloud compute ssh ${GCP_SSH_USERNAME}@$train-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-ml:latest && docker stop ml-app || true && docker rm ml-app || true && docker run -d --name ml-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-ml:latest"
-              elif [$dir -eq batch]; then
+              elif [$dir == batch]; then
                 echo "[CD] Deploy Batch App"
                 gcloud compute ssh ${GCP_SSH_USERNAME}@$batch-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-batch:latest && docker stop batch-app || true && docker rm batch-app || true && docker run -d --name batch-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web:latest"
               else
