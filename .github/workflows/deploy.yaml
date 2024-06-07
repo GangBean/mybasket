@@ -73,7 +73,7 @@ jobs:
             done
    
     outputs:
-      DIRS: $DIRS
+      DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
 
   deploy_containers:
     runs-on: ubuntu-latest
@@ -92,6 +92,7 @@ jobs:
         run: |
           echo "DIRS=$DIRS"
           target_dirs=($DIRS)
+          echo target_dirs
           for dir in ${target_dirs[@]}
             do
               echo "[CD] $dir application deploy..."
