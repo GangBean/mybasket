@@ -61,7 +61,7 @@ jobs:
           for dir in ${target_dirs[@]}
             do
               echo "[CD] $dir application image build..."
-              if [ $dir -eq web ] then;
+              if [ $dir -eq web ]; then
                 docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web/front:latest ./web/front
                 docker push ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web/front:latest
                 docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web/back:latest ./web/back
