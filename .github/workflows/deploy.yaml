@@ -1,0 +1,102 @@
+name: Deploy Updated Modules
+
+on:
+  pull_request
+  # push:
+  #   branches:
+  #     - main
+
+jobs:
+  extract_target_modules:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: 1. Checkout triggering commit
+        uses: actions/checkout@v4
+
+      - name: 2. Extract changed files
+        id: files
+        run: |
+          git fetch origin main
+          git diff --name-only origin/main..HEAD > changed_files.txt
+          cat changed_files.txt
+
+      - name: 3. Extract changed modules
+        id: dirs
+        run: |
+          changed_dirs=$(cat changed_files.txt | grep -E '^(web|database|ml|batch)/' | cut -d'/' -f1 | sort | uniq)
+          echo "$changed_dirs" > target_dirs.txt
+          cat target_dirs.txt
+
+      - name: 4.
+        id: target_dirs
+        run: |
+          echo "dirs=$(cat target_dirs.txt)" >> "$GITHUB_OUTPUT"
+
+    outputs:
+      DIRS: ${{ steps.target_dirs.dirs }}
+
+  build_images:
+    runs-on: ubuntu-latest
+    needs: extract_target_modules
+    steps:
+      - name: 1. Checkout triggering commit
+        uses: actions/checkout@v4
+
+      - name: 2. Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 3. Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKER_HUB_USERNAME}}
+          password: ${{sercrets.DOCKER_HUB_TOKEN}}
+
+      - name: 4. Build and push Images
+        id: build
+        env:
+          DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
+        run: |
+          target_dirs=($DIRS)
+          echo "${#target_dirs} directories"
+          for dir in $target_dirs
+            do  
+              docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-$dir:latest ./$dir
+              docker push ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-$dir:latest
+            done
+   
+    outputs:
+      DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
+
+  deploy_containers:
+    runs-on: ubuntu-latest
+    needs: build_images
+    steps:
+      - name: 1. Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{secrets.GCP_PROJECT_ID}}
+          service_account_key: ${{secrets.GCP_SA_KEY}}
+          export_default_credentials: true
+
+      - name: 2. Deploy to GCP Hosts
+        env:
+          DIRS: ${{needs.build_images.outpus.DIRS}}
+        run: |
+          for dir in ($DIRS)
+            do
+              if [$dir -eq web]; then
+                echo "Deploy Web App"
+                gcloud compute ssh ${GCP_SSH_USERNAME}@$app-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web:latest && docker stop web-app || true && docker rm web-app || true && docker run -d --name web-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web:latest"
+              elif [$dir -eq database]; then
+                echo "Deploy DB App"
+                gcloud compute ssh ${GCP_SSH_USERNAME}@$database-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-database:latest && docker stop db-app || true && docker rm db-app || true && docker run -d --name db-app -p 3306:3306 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-db:latest"
+              elif [$dir -eq ml]; then
+                echo "Deploy ML App"
+                gcloud compute ssh ${GCP_SSH_USERNAME}@$train-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-ml:latest && docker stop ml-app || true && docker rm ml-app || true && docker run -d --name ml-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-ml:latest"
+              elif [$dir -eq batch]; then
+                echo "Deploy Batch App"
+                gcloud compute ssh ${GCP_SSH_USERNAME}@$batch-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-batch:latest && docker stop batch-app || true && docker rm batch-app || true && docker run -d --name batch-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web:latest"
+              else
+                echo "Error: $dir"
+              fi
