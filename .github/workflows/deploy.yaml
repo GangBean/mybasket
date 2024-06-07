@@ -56,7 +56,6 @@ jobs:
           DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
           tmp: ${{needs.extract_target_modules.steps.target_dirs.outputs.dirs}}
         run: |
-          cd mybasket
           ls -lR
           target_dirs=($DIRS)
           echo "[CD] ${#target_dirs[@]} directories were changed"
