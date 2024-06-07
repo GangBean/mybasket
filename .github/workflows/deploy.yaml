@@ -1,4 +1,4 @@
-name: Deploy Updated Modules
+fname: Deploy Updated Modules
 
 on:
   pull_request
@@ -56,7 +56,6 @@ jobs:
           DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
           tmp: ${{needs.extract_target_modules.steps.target_dirs.outputs.dirs}}
         run: |
-          ls -lR
           target_dirs=($DIRS)
           echo "[CD] ${#target_dirs[@]} directories were changed"
           for dir in ${target_dirs[@]}
