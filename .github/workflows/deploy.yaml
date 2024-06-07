@@ -54,7 +54,6 @@ jobs:
         id: build
         env:
           DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
-          tmp: ${{needs.extract_target_modules.steps.target_dirs.outputs.dirs}}
         run: |
           target_dirs=($DIRS)
           echo "[CD] ${#target_dirs[@]} directories were changed"
@@ -74,7 +73,7 @@ jobs:
             done
    
     outputs:
-      DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
+      DIRS: $DIRS
 
   deploy_containers:
     runs-on: ubuntu-latest
