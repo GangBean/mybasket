@@ -32,9 +32,9 @@ jobs:
         run: |
           echo "dirs=$(cat target_dirs.txt)" >> $GITHUB_OUTPUT
           echo $GITHUB_OUTPUT
-          echo $DIRS
+          echo ${{steps.target_dirs.outputs.dirs}}
     outputs:
-      DIRS: ${{ steps.target_dirs.dirs }}
+      DIRS: ${{ steps.target_dirs.outputs.dirs }}
 
   build_images:
     runs-on: ubuntu-latest
