@@ -69,6 +69,7 @@ jobs:
               else
                 docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-$dir:latest ./$dir
                 docker push ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-$dir:latest
+              fi
               echo "[CD] $dir application image pushed to Docker Hub..."
             done
    
