@@ -28,10 +28,10 @@ jobs:
           echo "$changed_dirs" > target_dirs.txt
           cat target_dirs.txt
 
-      - name: 4.
+      - name: 4. Save Job Outputs
         id: target_dirs
         run: |
-          echo "dirs=$(cat target_dirs.txt)" >> "$GITHUB_OUTPUT"
+          echo "dirs=$(cat target_dirs.txt)" >> $GITHUB_ENV
 
     outputs:
       DIRS: ${{ steps.target_dirs.dirs }}
