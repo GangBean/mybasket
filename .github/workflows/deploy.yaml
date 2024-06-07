@@ -31,8 +31,6 @@ jobs:
         id: target_dirs
         run: |
           echo "dirs=$(cat target_dirs.txt)" >> $GITHUB_OUTPUT
-          echo $GITHUB_OUTPUT
-          echo ${{steps.target_dirs.outputs.dirs}}
     outputs:
       DIRS: ${{ steps.target_dirs.outputs.dirs }}
 
@@ -58,13 +56,9 @@ jobs:
           DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
           tmp: ${{needs.extract_target_modules.steps.target_dirs.outputs.dirs}}
         run: |
-          echo "DIRS=$DIRS"
-          echo "GIBHUT_DIRS=${{needs.extract_target_modules.outputs.DIRS}}"
-          echo "tmp=$tmp"
-          echo "GITHUB_tmp=${{needs.extract_target_modules.steps.target_dirs.outputs.dirs}}"
           target_dirs=($DIRS)
-          echo "[CD] ${#target_dirs} directories were changed"
-          for dir in $target_dirs
+          echo "[CD] ${#target_dirs[@]} directories were changed"
+          for dir in ${target_dirs[@]}
             do
               echo "[CD] $dir application image build..."
               docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-$dir:latest ./$dir
@@ -91,7 +85,7 @@ jobs:
           DIRS: ${{needs.build_images.outpus.DIRS}}
         run: |
           target_dirs=($DIRS)
-          for dir in $target_dirs
+          for dir in ${target_dirs[@]}
             do
               echo "[CD] $dir application deploy..."
               if [$dir -eq web]; then
