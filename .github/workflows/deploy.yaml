@@ -34,7 +34,6 @@ jobs:
         run: |
           echo "dirs=$(cat target_dirs.txt)" >> $GITHUB_OUTPUT
           echo $GITHUB_OUTPUT
-          echo ${{outputs.DIRS}}
           echo $DIRS
 
   build_images:
