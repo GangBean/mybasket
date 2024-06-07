@@ -9,8 +9,6 @@ on:
 jobs:
   extract_target_modules:
     runs-on: ubuntu-latest
-    outputs:
-      DIRS: ${{ steps.target_dirs.dirs }}
     steps:
       - name: 1. Checkout triggering commit
         uses: actions/checkout@v4
@@ -35,6 +33,8 @@ jobs:
           echo "dirs=$(cat target_dirs.txt)" >> $GITHUB_OUTPUT
           echo $GITHUB_OUTPUT
           echo $DIRS
+    outputs:
+      DIRS: ${{ steps.target_dirs.dirs }}
 
   build_images:
     runs-on: ubuntu-latest
@@ -56,9 +56,12 @@ jobs:
         id: build
         env:
           DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
+          tmp: ${{needs.extract_target_modules.steps.target_dirs.outputs.dirs}}
         run: |
-          echo $DIRS
-          echo ${{needs.extract_target_modules.outputs.DIRS}}
+          echo "DIRS=$DIRS"
+          echo "GIBHUT_DIRS=${{needs.extract_target_modules.outputs.DIRS}}"
+          echo "tmp=$tmp"
+          echo "GITHUB_tmp=${{needs.extract_target_modules.steps.target_dirs.outputs.dirs}}"
           target_dirs=($DIRS)
           echo "[CD] ${#target_dirs} directories were changed"
           for dir in $target_dirs
