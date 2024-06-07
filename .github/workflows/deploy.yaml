@@ -50,7 +50,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{secrets.DOCKER_HUB_USERNAME}}
-          password: ${{sercrets.DOCKER_HUB_TOKEN}}
+          password: ${{secrets.DOCKER_HUB_TOKEN}}
 
       - name: 4. Build and push Images
         id: build
