@@ -10,7 +10,7 @@ jobs:
   extract_target_modules:
     runs-on: ubuntu-latest
     outputs:
-      DIRS: ${{ steps.target_dirs.dirs }}
+      output1: ${{ steps.target_dirs.dirs }}
     steps:
       - name: 1. Checkout triggering commit
         uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
       - name: 4. Save Job Outputs
         id: target_dirs
         run: |
-          echo "dirs=$(cat target_dirs.txt)" >> $GITHUB_DIRS
+          echo "dirs=$(cat target_dirs.txt)" >> "$GITHUB_OUTPUT"
 
   build_images:
     runs-on: ubuntu-latest
@@ -53,7 +53,7 @@ jobs:
       - name: 4. Build and push Images
         id: build
         env:
-          DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
+          DIRS: ${{needs.extract_target_modules.outputs.output1}}
         run: |
           target_dirs=($DIRS)
           echo "${#target_dirs} directories"
@@ -64,7 +64,7 @@ jobs:
             done
    
     outputs:
-      DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
+      DIRS: ${{needs.extract_target_modules.outputs.output1}}
 
   deploy_containers:
     runs-on: ubuntu-latest
