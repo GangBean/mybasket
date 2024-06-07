@@ -88,8 +88,9 @@ jobs:
 
       - name: 2. Deploy to GCP Hosts
         env:
-          DIRS: ${{needs.build_images.outpus.DIRS}}
+          DIRS: ${{needs.build_images.outputs.DIRS}}
         run: |
+          echo "DIRS=$DIRS"
           target_dirs=($DIRS)
           for dir in ${target_dirs[@]}
             do
