@@ -96,16 +96,56 @@ jobs:
             do
               echo "[CD] $dir application deploy..."
               if [$dir == web]; then
+                STATUS=$(gcloud compute instances describe "app-server" --format="get(status)")
+                if [ $STATUS == TERMINATED ]; then
+                  echo "[CD] start app-server..."
+                  gcloud compute instances start app-server
+                elif [ $STATUS == RUNNING ]; then
+                  echo "[CD] app-server is Running..."
+                else
+                  echo "[CD] app-server is in $STATUS state..."
+                  continue
+                fi
                 echo "[CD] Deploy Web App"
                 gcloud compute ssh ${GCP_SSH_USERNAME}@$app-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-front:latest && docker stop front-app || true && docker rm front-app || true && docker run -d --name front-app -p 80:80 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-front:latest"
                 gcloud compute ssh ${GCP_SSH_USERNAME}@$app-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-back:latest && docker stop back-app || true && docker rm back-app || true && docker run -d --name back-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-back:latest"
               elif [$dir == database]; then
+                STATUS=$(gcloud compute instances describe "database-server" --format="get(status)")
+                if [ $STATUS == TERMINATED ]; then
+                  echo "[CD] start database-server..."
+                  gcloud compute instances start database-server
+                elif [ $STATUS == RUNNING ]; then
+                  echo "[CD] database-server is Running..."
+                else
+                  echo "[CD] database-server is in $STATUS state..."
+                  continue
+                fi
                 echo "[CD] Deploy DB App"
                 gcloud compute ssh ${GCP_SSH_USERNAME}@$database-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-database:latest && docker stop db-app || true && docker rm db-app || true && docker run -d --name db-app -p 3306:3306 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-db:latest"
               elif [$dir == ml]; then
+                STATUS=$(gcloud compute instances describe "train-server" --format="get(status)")
+                if [ $STATUS == TERMINATED ]; then
+                  echo "[CD] start train-server..."
+                  gcloud compute instances start train-server
+                elif [ $STATUS == RUNNING ]; then
+                  echo "[CD] train-server is Running..."
+                else
+                  echo "[CD] train-server is in $STATUS state..."
+                  continue
+                fi
                 echo "[CD] Deploy ML App"
                 gcloud compute ssh ${GCP_SSH_USERNAME}@$train-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-ml:latest && docker stop ml-app || true && docker rm ml-app || true && docker run -d --name ml-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-ml:latest"
               elif [$dir == batch]; then
+                STATUS=$(gcloud compute instances describe "batch-server" --format="get(status)")
+                if [ $STATUS == TERMINATED ]; then
+                  echo "[CD] start batch-server..."
+                  gcloud compute instances start batch-server
+                elif [ $STATUS == RUNNING ]; then
+                  echo "[CD] batch-server is Running..."
+                else
+                  echo "[CD] batch-server is in $STATUS state..."
+                  continue
+                fi
                 echo "[CD] Deploy Batch App"
                 gcloud compute ssh ${GCP_SSH_USERNAME}@$batch-server --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-batch:latest && docker stop batch-app || true && docker rm batch-app || true && docker run -d --name batch-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web:latest"
               else
