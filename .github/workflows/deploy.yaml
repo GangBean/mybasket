@@ -9,7 +9,8 @@ on:
 jobs:
   extract_target_modules:
     runs-on: ubuntu-latest
- 
+    outputs:
+      DIRS: ${{ steps.target_dirs.dirs }}
     steps:
       - name: 1. Checkout triggering commit
         uses: actions/checkout@v4
@@ -31,10 +32,7 @@ jobs:
       - name: 4. Save Job Outputs
         id: target_dirs
         run: |
-          echo "dirs=$(cat target_dirs.txt)" >> $GITHUB_ENV
-
-    outputs:
-      DIRS: ${{ steps.target_dirs.dirs }}
+          echo "dirs=$(cat target_dirs.txt)" >> $GITHUB_DIRS
 
   build_images:
     runs-on: ubuntu-latest
