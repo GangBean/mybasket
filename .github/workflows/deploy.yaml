@@ -1,4 +1,4 @@
-fname: Deploy Updated Modules
+name: Deploy Updated Modules
 
 on:
   pull_request
