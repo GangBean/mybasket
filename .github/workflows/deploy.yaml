@@ -104,6 +104,7 @@ jobs:
                 if [ $STATUS == TERMINATED ]; then
                   echo "[CD] start app-server..."
                   gcloud compute instances start app-server --zone=$ZONE
+                  sleep 3
                 elif [ $STATUS == RUNNING ]; then
                   echo "[CD] app-server is Running..."
                 else
@@ -129,6 +130,7 @@ jobs:
                 if [ $STATUS == TERMINATED ]; then
                   echo "[CD] start database-server..."
                   gcloud compute instances start database-server --zone=$ZONE
+                  sleep 3
                 elif [ $STATUS == RUNNING ]; then
                   echo "[CD] database-server is Running..."
                 else
@@ -148,6 +150,7 @@ jobs:
                 if [ $STATUS == TERMINATED ]; then
                   echo "[CD] start train-server..."
                   gcloud compute instances start train-server --zone=$ZONE
+                  sleep 3
                 elif [ $STATUS == RUNNING ]; then
                   echo "[CD] train-server is Running..."
                 else
@@ -167,6 +170,7 @@ jobs:
                 if [ $STATUS == TERMINATED ]; then
                   echo "[CD] start batch-server..."
                   gcloud compute instances start batch-server --zone=$ZONE
+                  sleep 3
                 elif [ $STATUS == RUNNING ]; then
                   echo "[CD] batch-server is Running..."
                 else
