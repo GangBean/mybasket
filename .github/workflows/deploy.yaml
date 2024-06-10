@@ -135,9 +135,10 @@ jobs:
                     sleep 1
                 done
 
-                if [ $ATTEMPT -eq MAX_ATTEMPTS ];
+                if [ $ATTEMPT -eq MAX_ATTEMPTS ]; then
                   echo "[CD] Deploying front-server failed after $MAX_ATTEMPTS attempts."
                   exit 1
+                fi
 
                 echo "[CD] Deploy Web back App"
                 # 최대 10번 시도
@@ -163,9 +164,10 @@ jobs:
                     sleep 1
                 done
                 
-                if [ $ATTEMPT -eq MAX_ATTEMPTS ];
-                  echo "[CD] Command failed after $MAX_ATTEMPTS attempts."
+                if [ $ATTEMPT -eq MAX_ATTEMPTS ]; then
+                  echo "[CD] Deploying back-server failed after $MAX_ATTEMPTS attempts."
                   exit 1
+                fi
                 
               elif [ $dir == database ]; then
                 ZONE=asia-northeast3-c
@@ -204,9 +206,10 @@ jobs:
                     sleep 1
                 done
                 
-                if [ $ATTEMPT -eq MAX_ATTEMPTS ];
-                  echo "[CD] Command failed after $MAX_ATTEMPTS attempts."
+                if [ $ATTEMPT -eq MAX_ATTEMPTS ]; then
+                  echo "[CD] Deploying database-server failed after $MAX_ATTEMPTS attempts."
                   exit 1
+                fi
                 
               elif [ $dir == ml ]; then
                 ZONE=asia-northeast3-b
@@ -245,9 +248,10 @@ jobs:
                     sleep 1
                 done
                 
-                if [ $ATTEMPT -eq MAX_ATTEMPTS ];
-                  echo "[CD] Command failed after $MAX_ATTEMPTS attempts."
+                if [ $ATTEMPT -eq MAX_ATTEMPTS ]; then
+                  echo "[CD] Deploying ml-server failed after $MAX_ATTEMPTS attempts."
                   exit 1
+                fi
                 
               elif [ $dir == batch ]; then
                 ZONE=asia-northeast3-c
@@ -287,9 +291,10 @@ jobs:
                     sleep 1
                 done
                 
-                if [ $ATTEMPT -eq MAX_ATTEMPTS ];
-                  echo "[CD] Command failed after $MAX_ATTEMPTS attempts."
+                if [ $ATTEMPT -eq MAX_ATTEMPTS ]; then
+                  echo "[CD] Deploying batch-server failed after $MAX_ATTEMPTS attempts."
                   exit 1
+                fi
               else
                 echo "[CD] Error: $dir"
               fi
