@@ -138,7 +138,7 @@ jobs:
                     sleep 1
                 done
 
-                if [ $ATTEMPT -eq MAX_ATTEMPTS ]; then
+                if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
                   echo "[CD] Deploying front-server failed after $MAX_ATTEMPTS attempts."
                   exit 1
                 fi
@@ -170,7 +170,7 @@ jobs:
                     sleep 1
                 done
                 
-                if [ $ATTEMPT -eq MAX_ATTEMPTS ]; then
+                if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
                   echo "[CD] Deploying back-server failed after $MAX_ATTEMPTS attempts."
                   exit 1
                 fi
@@ -215,7 +215,7 @@ jobs:
                     sleep 1
                 done
                 
-                if [ $ATTEMPT -eq MAX_ATTEMPTS ]; then
+                if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
                   echo "[CD] Deploying database-server failed after $MAX_ATTEMPTS attempts."
                   exit 1
                 fi
@@ -260,7 +260,7 @@ jobs:
                     sleep 1
                 done
                 
-                if [ $ATTEMPT -eq MAX_ATTEMPTS ]; then
+                if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
                   echo "[CD] Deploying ml-server failed after $MAX_ATTEMPTS attempts."
                   exit 1
                 fi
@@ -306,7 +306,7 @@ jobs:
                     sleep 1
                 done
                 
-                if [ $ATTEMPT -eq MAX_ATTEMPTS ]; then
+                if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
                   echo "[CD] Deploying batch-server failed after $MAX_ATTEMPTS attempts."
                   exit 1
                 fi
