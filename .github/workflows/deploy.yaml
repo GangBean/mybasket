@@ -1,0 +1,315 @@
+name: Deploy Updated Modules
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  extract_target_modules:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout triggering commit
+        uses: actions/checkout@v4
+
+      - name: 2. Extract changed files
+        id: files
+        run: |
+          git fetch origin main
+          git diff --name-only origin/main..HEAD > changed_files.txt
+          cat changed_files.txt
+
+      - name: 3. Extract changed modules
+        id: dirs
+        run: |
+          changed_dirs=$(cat changed_files.txt | grep -E '^(web|database|ml|batch)/' | cut -d'/' -f1 | sort | uniq | tr '\n' ' ')
+          echo "$changed_dirs" > target_dirs.txt
+          cat target_dirs.txt
+
+      - name: 4. Save Job Outputs
+        id: target_dirs
+        run: |
+          echo "dirs=$(cat target_dirs.txt)" >> $GITHUB_OUTPUT
+    outputs:
+      DIRS: ${{ steps.target_dirs.outputs.dirs }}
+
+  build_images:
+    runs-on: ubuntu-latest
+    needs: extract_target_modules
+    steps:
+      - name: 1. Checkout triggering commit
+        uses: actions/checkout@v4
+
+      - name: 2. Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 3. Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKER_HUB_USERNAME}}
+          password: ${{secrets.DOCKER_HUB_TOKEN}}
+
+      - name: 4. Build and push Images
+        id: build
+        env:
+          DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
+        run: |
+          target_dirs=($DIRS)
+          echo "[CD] ${#target_dirs[@]} directories were changed"
+          for dir in ${target_dirs[@]}
+            do
+              echo "[CD] $dir application image build..."
+              if [ $dir == web ]; then
+                docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-front:latest ./web/front
+                docker push ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-front:latest
+                docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-back:latest ./web/back
+                docker push ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-back:latest
+              else
+                docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-$dir:latest ./$dir
+                docker push ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-$dir:latest
+              fi
+              echo "[CD] $dir application image pushed to Docker Hub..."
+            done
+   
+    outputs:
+      DIRS: ${{needs.extract_target_modules.outputs.DIRS}}
+
+  deploy_containers:
+    runs-on: ubuntu-latest
+    needs: build_images
+    steps:
+      - name: 1. Login GCP
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{secrets.GCP_PROJECT_ID}}
+          credentials_json: ${{secrets.GCP_SA_KEY}}
+      
+      - name: 2. Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: 3. Deploy to GCP Hosts
+        env:
+          DIRS: ${{needs.build_images.outputs.DIRS}}
+        run: |
+          echo "DIRS=$DIRS"
+          target_dirs=($DIRS)
+          echo target_dirs
+          for dir in ${target_dirs[@]}
+            do
+              echo "[CD] $dir application deploy..."
+              if [ $dir == web ]; then
+                ZONE=asia-northeast3-c
+                STATUS=$(gcloud compute instances describe "app-server" --zone=$ZONE --format="get(status)")
+                if [ $STATUS == TERMINATED ]; then
+                  echo "[CD] start app-server..."
+                  gcloud compute instances start app-server --zone=$ZONE
+                  sleep 3
+                elif [ $STATUS == RUNNING ]; then
+                  echo "[CD] app-server is Running..."
+                else
+                  echo "[CD] app-server is in $STATUS state..."
+                  continue
+                fi
+                echo "[CD] Deploy Web front App"
+                # 최대 10번 시도
+                MAX_ATTEMPTS=10
+                ATTEMPT=0
+                
+                while [[ $ATTEMPT -lt $MAX_ATTEMPTS ]]; do
+                    ATTEMPT=$((ATTEMPT + 1))
+                    echo "Attempt $ATTEMPT of $MAX_ATTEMPTS..."
+
+                    set +e
+                    gcloud compute ssh ${{secrets.GCP_SSH_USERNAME}}@app-server \
+                      --zone=$ZONE \
+                      --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-front:latest \
+                      && docker stop front-app || true \
+                      && docker rm front-app || true \
+                      && docker run -d --name front-app -p 80:80 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-front:latest"
+                    SSH_EXIT_STATUS=$?
+                    set -e
+                    
+                    if [[ $SSH_EXIT_STATUS -eq 0 ]]; then
+                        echo "Command succeeded on attempt $ATTEMPT."
+                        break
+                    fi
+                
+                    sleep 1
+                done
+
+                if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+                  echo "[CD] Deploying front-server failed after $MAX_ATTEMPTS attempts."
+                  exit 1
+                fi
+
+                echo "[CD] Deploy Web back App"
+                # 최대 10번 시도
+                MAX_ATTEMPTS=10
+                ATTEMPT=0
+                
+                while [[ $ATTEMPT -lt $MAX_ATTEMPTS ]]; do
+                    ATTEMPT=$((ATTEMPT + 1))
+                    echo "Attempt $ATTEMPT of $MAX_ATTEMPTS..."
+
+                    set +e
+                    gcloud compute ssh ${{secrets.GCP_SSH_USERNAME}}@app-server \
+                      --zone=$ZONE \
+                      --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-back:latest \
+                      && docker stop back-app || true \
+                      && docker rm back-app || true \
+                      && docker run -d --name back-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-back:latest"
+                    SSH_EXIT_STATUS=$?
+                    set -e
+                    
+                    if [[ $SSH_EXIT_STATUS -eq 0 ]]; then
+                        echo "Deploying back-server succeeded on attempt $ATTEMPT."
+                        break
+                    fi
+                
+                    sleep 1
+                done
+                
+                if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+                  echo "[CD] Deploying back-server failed after $MAX_ATTEMPTS attempts."
+                  exit 1
+                fi
+                
+              elif [ $dir == database ]; then
+                ZONE=asia-northeast3-c
+                STATUS=$(gcloud compute instances describe "database-server" --zone=$ZONE --format="get(status)")
+                if [ $STATUS == TERMINATED ]; then
+                  echo "[CD] start database-server..."
+                  gcloud compute instances start database-server --zone=$ZONE
+                  sleep 3
+                elif [ $STATUS == RUNNING ]; then
+                  echo "[CD] database-server is Running..."
+                else
+                  echo "[CD] database-server is in $STATUS state..."
+                  continue
+                fi
+                echo "[CD] Deploy DB App"
+                # 최대 10번 시도
+                MAX_ATTEMPTS=10
+                ATTEMPT=0
+                
+                while [[ $ATTEMPT -lt $MAX_ATTEMPTS ]]; do
+                    ATTEMPT=$((ATTEMPT + 1))
+                    echo "Attempt $ATTEMPT of $MAX_ATTEMPTS..."
+
+                    set +e
+                    gcloud compute ssh ${{secrets.GCP_SSH_USERNAME}}@database-server \
+                      --zone=$ZONE \
+                      --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-database:latest \
+                      && docker stop db-app || true \
+                      && docker rm db-app || true \
+                      && docker run -d --name db-app -p 3306:3306 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-database:latest"
+                    SSH_EXIT_STATUS=$?
+                    set -e
+                    
+                    if [[ $SSH_EXIT_STATUS -eq 0 ]]; then
+                        echo "Deploying database-server succeeded on attempt $ATTEMPT."
+                        break
+                    fi
+                
+                    sleep 1
+                done
+                
+                if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+                  echo "[CD] Deploying database-server failed after $MAX_ATTEMPTS attempts."
+                  exit 1
+                fi
+                
+              elif [ $dir == ml ]; then
+                ZONE=asia-northeast3-b
+                STATUS=$(gcloud compute instances describe "train-server" --zone=$ZONE --format="get(status)")
+                if [ $STATUS == TERMINATED ]; then
+                  echo "[CD] start train-server..."
+                  gcloud compute instances start train-server --zone=$ZONE
+                  sleep 3
+                elif [ $STATUS == RUNNING ]; then
+                  echo "[CD] train-server is Running..."
+                else
+                  echo "[CD] train-server is in $STATUS state..."
+                  continue
+                fi
+                echo "[CD] Deploy ML App"
+                # 최대 10번 시도
+                MAX_ATTEMPTS=10
+                ATTEMPT=0
+                
+                while [[ $ATTEMPT -lt $MAX_ATTEMPTS ]]; do
+                    ATTEMPT=$((ATTEMPT + 1))
+                    echo "Attempt $ATTEMPT of $MAX_ATTEMPTS..."
+
+                    set +e
+                    gcloud compute ssh ${{secrets.GCP_SSH_USERNAME}}@train-server \
+                      --zone=$ZONE \
+                      --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-ml:latest \
+                      && docker stop ml-app || true \
+                      && docker rm ml-app || true \
+                      && docker run -d --name ml-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-ml:latest"
+                    SSH_EXIT_STATUS=$?
+                    set -e
+                    
+                    if [[ $SSH_EXIT_STATUS -eq 0 ]]; then
+                        echo "Deploying train-server succeeded on attempt $ATTEMPT."
+                        break
+                    fi
+                
+                    sleep 1
+                done
+                
+                if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+                  echo "[CD] Deploying ml-server failed after $MAX_ATTEMPTS attempts."
+                  exit 1
+                fi
+                
+              elif [ $dir == batch ]; then
+                ZONE=asia-northeast3-c
+                STATUS=$(gcloud compute instances describe "batch-server" --zone=$ZONE --format="get(status)")
+                if [ $STATUS == TERMINATED ]; then
+                  echo "[CD] start batch-server..."
+                  gcloud compute instances start batch-server --zone=$ZONE
+                  sleep 3
+                elif [ $STATUS == RUNNING ]; then
+                  echo "[CD] batch-server is Running..."
+                else
+                  echo "[CD] batch-server is in $STATUS state..."
+                  continue
+                fi
+                echo "[CD] Deploy Batch App"
+                
+                # 최대 10번 시도
+                MAX_ATTEMPTS=10
+                ATTEMPT=0
+                
+                while [[ $ATTEMPT -lt $MAX_ATTEMPTS ]]; do
+                    ATTEMPT=$((ATTEMPT + 1))
+                    echo "Attempt $ATTEMPT of $MAX_ATTEMPTS..."
+
+                    set +e
+                    gcloud compute ssh ${{secrets.GCP_SSH_USERNAME}}@batch-server \
+                      --zone=$ZONE \
+                      --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-batch:latest \
+                      && docker stop batch-app || true \
+                      && docker rm batch-app || true \
+                      && docker run -d --name batch-app -p 8080:8080 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-batch:latest"
+                    SSH_EXIT_STATUS=$?
+                    set -e
+                    
+                    if [[ $SSH_EXIT_STATUS -eq 0 ]]; then
+                        echo "Deploying batch-server succeeded on attempt $ATTEMPT."
+                        break
+                    fi
+                
+                    sleep 1
+                done
+                
+                if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+                  echo "[CD] Deploying batch-server failed after $MAX_ATTEMPTS attempts."
+                  exit 1
+                fi
+              else
+                echo "[CD] Error: $dir"
+              fi
+            done
