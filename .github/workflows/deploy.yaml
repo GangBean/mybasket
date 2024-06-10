@@ -143,7 +143,7 @@ jobs:
                   --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-database:latest \
                   && docker stop db-app || true \
                   && docker rm db-app || true \
-                  && docker run -d --name db-app -p 3306:3306 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-db:latest"
+                  && docker run -d --name db-app -p 3306:3306 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-database:latest"
               elif [ $dir == ml ]; then
                 ZONE=asia-northeast3-b
                 STATUS=$(gcloud compute instances describe "train-server" --zone=$ZONE --format="get(status)")
