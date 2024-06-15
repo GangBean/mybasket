@@ -1,11 +1,30 @@
-# Base version: 8.0.37
+# Stage 1: install git and pull config file
+FROM ubuntu:latest AS git_installer
+
+RUN apt-get update && \
+    apt-get install -y git
+
+ARG BRANCH=main
+
+WORKDIR /app
+
+RUN git init \
+    && git remote add origin https://github.com/GangBean/mybasket.git \
+    && git config core.sparseCheckout true \
+    && echo "database/config/" >> .git/info/sparse-checkout \
+    && git pull origin $BRANCH
+
+RUN if [ ! -f '/app/database/config/my.cnf' ]; then \
+        echo "Error: my.cnf file not found. Existing... \n $(pwd) \n $(ls -l ./database/config/)" && exit 1; \
+    fi
+
+# Stage 2: build mysql image
 FROM mysql:8.0.37
 
-# Write mysqld config file
-RUN echo "[mysqld]\n\
-sql_mode=STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION\n\
-max_connections=200\n\
-bind-address = 0.0.0.0\n" > /etc/mysql/conf.d/my.cnf
+WORKDIR /app
+
+# pull config file from stage 1
+COPY --from=git_installer /app/database/config/my.cnf /etc/mysql/my.cnf
 
 # Define MySql data directory
 VOLUME /var/lib/mysql
