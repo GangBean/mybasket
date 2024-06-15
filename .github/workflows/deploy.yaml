@@ -16,7 +16,7 @@ jobs:
         id: files
         run: |
           git fetch origin main
-          git diff --name-only origin/main..HEAD > changed_files.txt
+	  git diff --name-only origin/main..HEAD^ > changed_files.txt
           cat changed_files.txt
 
       - name: 3. Extract changed modules
