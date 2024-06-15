@@ -202,7 +202,7 @@ jobs:
                       --command="docker pull ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-database:latest \
                       && docker stop db-app || true \
                       && docker rm db-app || true \
-                      && docker run -d --name db-app -p 3306:3306 ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-database:latest"
+                      && docker run -d --name db-app -p 3306:3306 -v /var/lib/mysql:/var/lib/mysql -v /var/log/mysql:/var/log/mysql -e MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }} ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-database:latest"
                     SSH_EXIT_STATUS=$?
                     set -e
                     
