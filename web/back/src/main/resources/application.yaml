@@ -8,3 +8,13 @@ spring:
     console:
       enabled: true
 
+auth:
+  google:
+    client:
+      id: ${GOOGLE_CLIENT_ID}
+      secret: ${GOOGLE_CLIENT_SECRET}
+      redirectUri: ${GOOGLE_REDIRECT_URI}
+
+logging:
+  level:
+    root: INFO
