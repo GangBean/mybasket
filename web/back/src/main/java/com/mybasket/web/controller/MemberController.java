@@ -1,0 +1,99 @@
+package com.mybasket.web.controller;
+
+import com.mybasket.web.controller.response.LoginResponse;
+import com.mybasket.web.dto.GoogleToken;
+import com.mybasket.web.dto.GoogleUserInfo;
+import com.mybasket.web.dto.LoginRequest;
+import com.mybasket.web.service.MemberService;
+import com.mybasket.web.util.TokenCookieUtil;
+
+import java.util.Optional;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.client.RestClient;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+
+@CrossOrigin(origins = "http://localhost", maxAge = 3600)
+@Controller
+@RequestMapping("/api/auth")
+public class MemberController {
+	private static final String GOOGLE_TOKEN_REQUEST_URI = "https://oauth2.googleapis.com/token";
+	private static final String GOOGLE_USERINFO_REQUEST_URI = "https://www.googleapis.com/oauth2/v2/userinfo";
+
+	@Value("${auth.google.client.id}")
+	private String clientId;
+
+	@Value("${auth.google.client.secret}")
+	private String clientSecret;
+
+	@Value("${auth.google.client.redirectUri}")
+	private String redirectUri;
+
+	@Value("${spring.profiles.active}")
+	private String profile;
+
+	private final MemberService memberService;
+
+	public MemberController(MemberService memberService) {
+		this.memberService = memberService;
+	}
+
+	@GetMapping("/members")
+	public ResponseEntity<LoginResponse> googleLoginCallback(@RequestParam("code") String code) {
+		RestClient client = RestClient.create();
+
+		MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
+		request.add("code", code);
+		request.add("client_id", clientId);
+		request.add("client_secret", clientSecret);
+		request.add("redirect_uri", redirectUri);
+		request.add("grant_type", "authorization_code");
+
+		GoogleToken googleToken = Optional.ofNullable(client.post()
+				.uri(GOOGLE_TOKEN_REQUEST_URI)
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.body(request)
+				.retrieve()
+				.toEntity(GoogleToken.class)
+				.getBody())
+				.orElseThrow(() -> new RuntimeException("[Error] Google token request failed..."));
+
+		// request to get userinfo
+		GoogleUserInfo googleUserInfo = Optional.ofNullable(client.get()
+				.uri(GOOGLE_USERINFO_REQUEST_URI)
+				.headers(header -> header.setBearerAuth(googleToken.accessToken()))
+				.retrieve()
+				.toEntity(GoogleUserInfo.class)
+				.getBody())
+				.orElseThrow(() -> new RuntimeException("[Error] Google user-info request failed..."));
+
+		// enroll app member and login
+		LoginResponse loginResponse = memberService.signupAndLogin(LoginRequest.builder()
+				.email(googleUserInfo.email())
+				.name(googleUserInfo.name())
+				.build());
+
+		return ResponseEntity
+				.status(HttpStatus.CREATED)
+				.contentType(MediaType.APPLICATION_JSON)
+				.headers(tokenCookies(googleToken.accessToken(), googleToken.refreshToken()))
+				.body(loginResponse);
+	}
+
+	private HttpHeaders tokenCookies(String accessToken, String refreshToken) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Set-Cookie", TokenCookieUtil.cookie("accessToken", accessToken, profile));
+		headers.add("Set-Cookie", TokenCookieUtil.cookie("refreshToken", refreshToken, profile));
+		return headers;
+	}
+}
