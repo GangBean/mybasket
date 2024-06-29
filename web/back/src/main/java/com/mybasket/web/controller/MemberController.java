@@ -7,12 +7,15 @@ import com.mybasket.web.dto.LoginRequest;
 import com.mybasket.web.service.MemberService;
 import com.mybasket.web.util.TokenCookieUtil;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.client.RestClient;
 import org.springframework.http.HttpHeaders;
@@ -23,12 +26,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
-@CrossOrigin(origins = "http://localhost", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost", maxAge = 3600, allowCredentials="true")
 @Controller
 @RequestMapping("/api/auth")
 public class MemberController {
 	private static final String GOOGLE_TOKEN_REQUEST_URI = "https://oauth2.googleapis.com/token";
 	private static final String GOOGLE_USERINFO_REQUEST_URI = "https://www.googleapis.com/oauth2/v2/userinfo";
+	private static final String APP_HOME = "http://localhost";
 
 	@Value("${auth.google.client.id}")
 	private String clientId;
@@ -84,16 +88,27 @@ public class MemberController {
 				.build());
 
 		return ResponseEntity
-				.status(HttpStatus.CREATED)
+				.status(HttpStatus.FOUND)
 				.contentType(MediaType.APPLICATION_JSON)
 				.headers(tokenCookies(googleToken.accessToken(), googleToken.refreshToken()))
 				.body(loginResponse);
+	}
+
+	@GetMapping("/check")
+	public ResponseEntity<Map<String, Boolean>> isLoggedin(
+			@CookieValue(value = "accessToken", required = false) String accessToken) {
+		Map<String, Boolean> login = new HashMap<>();
+		login.put("loggedIn", (accessToken != null && !accessToken.isEmpty()));
+		return ResponseEntity.ok()
+				.body(login);
 	}
 
 	private HttpHeaders tokenCookies(String accessToken, String refreshToken) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Set-Cookie", TokenCookieUtil.cookie("accessToken", accessToken, profile));
 		headers.add("Set-Cookie", TokenCookieUtil.cookie("refreshToken", refreshToken, profile));
+		headers.add("Set-Cookie", TokenCookieUtil.login_cookie());
+		headers.add("location", APP_HOME);
 		return headers;
 	}
 }
