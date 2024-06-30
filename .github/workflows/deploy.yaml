@@ -67,7 +67,7 @@ jobs:
               if [ $dir == web ]; then
                 docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-front:latest ./web/front
                 docker push ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-front:latest
-                docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-back:latest ./web/back
+                docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-back:latest --build-arg GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} --build-arg GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} --build-arg GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }} ./web/back
                 docker push ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-web-back:latest
               else
                 docker build -t ${{secrets.DOCKER_HUB_USERNAME}}/mybasket-$dir:latest ./$dir
