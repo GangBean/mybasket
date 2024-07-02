@@ -8,7 +8,7 @@ function App() {
   const [recipeNo, setRecipeNo] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/auth/check', { withCredentials: true }) // 쿠키 포함 요청
+    axios.get('http://localhost:8080/api/auth/sessions', { withCredentials: true }) // 쿠키 포함 요청
       .then(response => {
         if (response.data.loggedIn) {
           setIsLoggedIn(response.data.loggedIn);

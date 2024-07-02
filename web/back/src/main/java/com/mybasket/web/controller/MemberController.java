@@ -94,7 +94,7 @@ public class MemberController {
 				.body(loginResponse);
 	}
 
-	@GetMapping("/check")
+	@GetMapping("/sessions")
 	public ResponseEntity<Map<String, Boolean>> isLoggedin(
 			@CookieValue(value = "accessToken", required = false) String accessToken) {
 		Map<String, Boolean> login = new HashMap<>();
