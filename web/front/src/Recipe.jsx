@@ -23,10 +23,10 @@ const Recipe = ({ recipeNo }) => {
 
     return (
         <div className="Recipe">
-            <img className="Recipe-image" src={recipe.imageUri} alt={recipe.name} />
+            <img className="Recipe-image" src={recipe.imageUrl} alt={recipe.name} />
             <h2>{recipe.name}</h2>
             <p>{recipe.description}</p>
-            <a href={recipe.recipeUri} target="_blank" rel="noopener noreferrer">View Recipe</a>
+            <a href={recipe.recipeUrl} target="_blank" rel="noopener noreferrer">View Recipe</a>
         </div>
     );
 };

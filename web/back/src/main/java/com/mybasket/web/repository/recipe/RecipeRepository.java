@@ -20,12 +20,12 @@ public class RecipeRepository {
             SELECT id
                  , recipe_no
                  , name
-                 , category
-                 , recipe_uri
-                 , image_uri
-                 , volume
-                 , cooking_time
-                 , difficulty 
+                 , recipe_url
+                 , image_url
+                 , portion
+                 , cooking_minute
+                 , difficulty
+                 , description
               FROM recipe
              WHERE recipe_no = ?
         """;
@@ -34,12 +34,12 @@ public class RecipeRepository {
             .id(rs.getLong("id"))
             .recipeNo(rs.getString("recipe_no"))
             .name(rs.getString("name"))
-            .category(rs.getString("category"))
-            .recipeUri(rs.getString("recipe_uri"))
-            .imageUri(rs.getString("image_uri"))
-            .volume(rs.getString("volume"))
-            .cookingTime(rs.getInt("cooking_time"))
+            .recipeUrl(rs.getString("recipe_url"))
+            .imageUrl(rs.getString("image_url"))
+            .portion(rs.getInt("portion"))
+            .cookingMinute(rs.getInt("cooking_minute"))
             .difficulty(rs.getString("difficulty"))
+            .decription(rs.getString("description"))
             .build();
         }, recipeNo).stream().findAny();
     }
