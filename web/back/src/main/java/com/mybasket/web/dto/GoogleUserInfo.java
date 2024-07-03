@@ -16,4 +16,11 @@ public class GoogleUserInfo {
     public String name() {
         return this.name;
     }
+
+    @Override
+    public String toString() {
+        return "GoogleUserInfo [email=" + email + ", name=" + name + "]";
+    }
+
+    
 }

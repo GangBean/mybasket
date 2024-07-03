@@ -23,6 +23,7 @@ public class MemberRepository {
         String sql = "SELECT id, email, name FROM member WHERE email = ?";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             return Member.builder()
+                    .id(rs.getLong("id"))
                     .email(rs.getString("email"))
                     .name(rs.getString("name"))
                     .build();
