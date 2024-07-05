@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import LoginButton from './Login';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import LoginButton from './Login';
+import RecommendationHistoryCardList from './RecommendationHistoryCardList';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/auth/check', { withCredentials: true }) // 쿠키 포함 요청
+    axios.get('http://localhost:8080/api/auth/sessions', { withCredentials: true }) // 쿠키 포함 요청
       .then(response => {
         if (response.data.loggedIn) {
           setIsLoggedIn(response.data.loggedIn);
@@ -26,11 +27,10 @@ function App() {
         </header>
       </div>
       <div>
-        {isLoggedIn ? (
-          <h2>Welcome!</h2>
-        ) : (
-          <LoginButton />
-        )}
+        <LoginButton isLoggedIn={isLoggedIn} />
+      </div>
+      <div>
+        <RecommendationHistoryCardList isLoggedIn={isLoggedIn} />
       </div>
     </div>
   )
