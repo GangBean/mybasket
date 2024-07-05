@@ -1,0 +1,1 @@
+insert into member_recommendation_recipe(member_id, recipe_id, recommendation_datetime, preference) values(1, 1, now(), 'like');

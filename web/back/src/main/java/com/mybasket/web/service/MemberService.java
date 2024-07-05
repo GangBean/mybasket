@@ -29,4 +29,10 @@ public class MemberService {
 				.name(member.name())
 				.build();
 	}
+
+	public Long findMemberIdByEmail(String email) {
+		return memberRepository.findByEmail(email)
+				.orElseThrow()
+				.id();
+	}
 }

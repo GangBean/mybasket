@@ -14,6 +14,10 @@ public class Member {
         this.name = name;
     }
 
+    public Long id() {
+        return this.id;
+    }
+
     public String email() {
         return this.email;
     }
