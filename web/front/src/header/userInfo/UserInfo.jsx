@@ -2,17 +2,26 @@ import React from "react";
 import Cookies from "js-cookie";
 import LoginButton from "../../Login";
 
-const MemberInfo = ({ isLoggedIn, memberImageUrl }) => {
+const UserInfo = ({ isLoggedIn, memberImageUrl }) => {
     return (
         <div>
             {isLoggedIn ?
-                (<MemberImage imageUrl={memberImageUrl} />) :
-                (<LoginButton />)}
+                (<MemberInfo imageUrl={memberImageUrl} />) :
+                (<GuestInfo isLoggedIn={isLoggedIn} />)}
         </div>
     );
 };
 
-const MemberImage = ({ memberImageUrl }) => {
+const GuestInfo = ({ isLoggedIn }) => {
+    return (
+        <div>
+            <p>로그인이 필요합니다.</p>
+            <LoginButton isLoggedIn={isLoggedIn} />
+        </div>
+    )
+}
+
+const MemberInfo = ({ memberImageUrl }) => {
     return (
         <div className="memberImage">
             <a href="/api/members/infos" className="memberInfoLink">
@@ -40,4 +49,4 @@ const LogoutButton = () => {
     );
 };
 
-export default MemberInfo;
+export default UserInfo;
