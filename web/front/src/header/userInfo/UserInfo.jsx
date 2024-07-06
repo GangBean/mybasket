@@ -1,12 +1,12 @@
 import React from "react";
 import Cookies from "js-cookie";
-import LoginButton from "../../Login";
+import LoginButton from "./Login";
 
-const UserInfo = ({ isLoggedIn, memberImageUrl }) => {
+const UserInfo = ({ isLoggedIn, memberImageUrl, memberEmail, memberName }) => {
     return (
         <div>
             {isLoggedIn ?
-                (<MemberInfo imageUrl={memberImageUrl} />) :
+                (<MemberInfo imageUrl={memberImageUrl} memberEmail={memberEmail} memberName={memberName} />) :
                 (<GuestInfo isLoggedIn={isLoggedIn} />)}
         </div>
     );
@@ -21,12 +21,14 @@ const GuestInfo = ({ isLoggedIn }) => {
     )
 }
 
-const MemberInfo = ({ memberImageUrl }) => {
+const MemberInfo = ({ memberImageUrl, memberEmail, memberName }) => {
     return (
         <div className="memberImage">
             <a href="/api/members/infos" className="memberInfoLink">
                 <img src={memberImageUrl}></img>
             </a>
+            <p className="memberEmail">{memberEmail}</p>
+            <p className="memberName">{memberName}</p>
             <LogoutButton />
         </div>
     );
@@ -40,11 +42,12 @@ const LogoutButton = () => {
             Cookies.remove(cookie, { path: '/' }); // 각각의 쿠키 삭제
         }
         console.log('All cookies removed');
+        window.location.href = 'http://localhost';
     };
 
     return (
-        <div className="logoutButton">
-            <button onClick={logout}>로그아웃</button>
+        <div className="logout">
+            <button className="logoutButton" onClick={logout}>로그아웃</button>
         </div>
     );
 };
