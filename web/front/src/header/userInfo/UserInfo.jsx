@@ -4,7 +4,7 @@ import LoginButton from "./Login";
 
 const UserInfo = ({ isLoggedIn, memberImageUrl, memberEmail, memberName }) => {
     return (
-        <div>
+        <div className="userInfo">
             {isLoggedIn ?
                 (<MemberInfo imageUrl={memberImageUrl} memberEmail={memberEmail} memberName={memberName} />) :
                 (<GuestInfo isLoggedIn={isLoggedIn} />)}
@@ -14,7 +14,7 @@ const UserInfo = ({ isLoggedIn, memberImageUrl, memberEmail, memberName }) => {
 
 const GuestInfo = ({ isLoggedIn }) => {
     return (
-        <div>
+        <div className="guestInfo">
             <p>로그인이 필요합니다.</p>
             <LoginButton isLoggedIn={isLoggedIn} />
         </div>
@@ -23,9 +23,9 @@ const GuestInfo = ({ isLoggedIn }) => {
 
 const MemberInfo = ({ memberImageUrl, memberEmail, memberName }) => {
     return (
-        <div className="memberImage">
+        <div className="memberInfo">
             <a href="/api/members/infos" className="memberInfoLink">
-                <img src={memberImageUrl}></img>
+                <img className="memberImage" src={memberImageUrl}></img>
             </a>
             <p className="memberEmail">{memberEmail}</p>
             <p className="memberName">{memberName}</p>
@@ -46,9 +46,7 @@ const LogoutButton = () => {
     };
 
     return (
-        <div className="logout">
-            <button className="logoutButton" onClick={logout}>로그아웃</button>
-        </div>
+        <button className="logoutButton" onClick={logout}>로그아웃</button>
     );
 };
 
