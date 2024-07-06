@@ -1,5 +1,7 @@
 import React from 'react';
 
+export const LOGIN_URI = 'https://accounts.google.com/o/oauth2/v2/auth?client_id=49458879196-a90b39d0o0bgh9d08cfu87mtms23lap8.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/auth/members&response_type=code&scope=profile%20email&access_type=offline';
+
 const LoginButton = ({ isLoggedIn }) => {
 	return (
 		<div>
@@ -12,8 +14,6 @@ const UserInfo = () => {
 }
 
 const GoogleLoginButton = () => {
-	const LOGIN_URI = 'https://accounts.google.com/o/oauth2/v2/auth?client_id=49458879196-a90b39d0o0bgh9d08cfu87mtms23lap8.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/auth/members&response_type=code&scope=profile%20email&access_type=offline';
-
 	const handleButtonClick = () => {
 		window.location.href = LOGIN_URI;
 	};
