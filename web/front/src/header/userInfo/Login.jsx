@@ -4,14 +4,15 @@ export const LOGIN_URI = 'https://accounts.google.com/o/oauth2/v2/auth?client_id
 
 const LoginButton = ({ isLoggedIn }) => {
 	return (
-		<div>
+		<div className='loginButton'>
 			{isLoggedIn ? (<UserInfo />) : (<GoogleLoginButton />)}
-		</div>)
-}
+		</div>
+	);
+};
 
 const UserInfo = () => {
 	return <h2>Welcome!</h2>;
-}
+};
 
 const GoogleLoginButton = () => {
 	const handleButtonClick = () => {
