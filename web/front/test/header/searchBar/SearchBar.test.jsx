@@ -9,7 +9,7 @@ describe('SearchBar 컴포넌트 테스트', () => {
 
         const inputBox = container.querySelector('.searchInputBox');
 
-        expect(inputBox).toBeInDocument();
+        expect(inputBox).toBeInTheDocument();
     });
 
     test('서치바는 서치 버튼을 갖습니다.', () => {
@@ -17,7 +17,7 @@ describe('SearchBar 컴포넌트 테스트', () => {
 
         const searchButton = container.querySelector('.searchButton');
 
-        expect(searchButton).toBeInDocument();
+        expect(searchButton).toBeInTheDocument();
     });
 
     test('입력 박스에 값을 넣고 엔터를 누르면 검색결과창으로 이동합니다.', async () => {
