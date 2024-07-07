@@ -17,7 +17,10 @@ describe("MemberHistory component test", () => {
     test("더보기 버튼을 누르면 한번에 최대 10개의 레시피가 추가됩니다.", async () => {
         const testValue = Array.from({ length: 10 }).map((_, x) => { return { myRecipeId: x }; });
         console.log(testValue);
-        const getNext = () => testValue;
+        const getNext = () => {
+            console.log("Get Next 10 recipes"); 
+            return testValue;
+        };
         const { container } = render(<MemberHistory getNext={getNext}></MemberHistory>);
 
         const moreButton = container.querySelector(".moreButton");
