@@ -1,6 +1,7 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { render } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
+import AllTimeRanking from "../../src/body/AllTimeRanking";
 
 describe("AllTimeRanking component test", () => {
     test("RankingRecipes를 갖습니다.", () => {
