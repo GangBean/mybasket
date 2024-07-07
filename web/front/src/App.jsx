@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import LoginButton from './Login';
-import RecommendationHistoryCardList from './RecommendationHistoryCardList';
+import Header from './header/Header';
+import Body from './body/Body';
+import Footer from './footer/Footer';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -20,19 +21,24 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <div className="App">
-        <header className="App-header">
-          <h1>Hello, MyBasket!</h1>
-        </header>
-      </div>
-      <div>
-        <LoginButton isLoggedIn={isLoggedIn} />
-      </div>
-      <div>
-        <RecommendationHistoryCardList isLoggedIn={isLoggedIn} />
-      </div>
-    </div>
+    // <div>
+    //   <div className="App">
+    //     <header className="App-header">
+    //       <h1>Hello, MyBasket!</h1>
+    //     </header>
+    //   </div>
+    //   <div>
+    //     <LoginButton isLoggedIn={isLoggedIn} />
+    //   </div>
+    //   <div>
+    //     <RecommendationHistoryCardList isLoggedIn={isLoggedIn} />
+    //   </div>
+    // </div>
+    <>
+      <Header isLoggedIn={false}></Header>
+      <Body isLoggedIn={false} state={"main"}></Body>
+      <Footer isLoggedIn={false}></Footer>
+    </>
   )
 }
 

@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "./logo";
+import Logo from "./Logo";
 import SearchBar from "./searchBar/SearchBar";
 import UserInfo from "./userInfo/UserInfo";
 
