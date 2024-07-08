@@ -2,8 +2,8 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import UserInfo from '../../../src/header/userInfo/UserInfo';
-import { LOGIN_URI } from '../../../src/header/userInfo/Login';
 import Cookies from 'js-cookie';
+import { GOOGLE_LOGIN_URI } from '../../../src/common/GoogleLoginButton';
 
 describe('유저 정보 테스트', () => {
     beforeEach(() => {
@@ -28,7 +28,7 @@ describe('유저 정보 테스트', () => {
 
         await fireEvent.click(loginButton);
 
-        expect(window.location.href).toBe(LOGIN_URI);
+        expect(window.location.href).toBe(GOOGLE_LOGIN_URI);
     });
 
     test('로그인 상태에선 사용자정보와 로그아웃버튼이 출력됩니다.', async () => {

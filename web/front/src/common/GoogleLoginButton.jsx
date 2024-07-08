@@ -1,22 +1,10 @@
-import React from 'react';
+import React from "react";
 
-export const LOGIN_URI = 'https://accounts.google.com/o/oauth2/v2/auth?client_id=49458879196-a90b39d0o0bgh9d08cfu87mtms23lap8.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/auth/members&response_type=code&scope=profile%20email&access_type=offline';
-
-const LoginButton = ({ isLoggedIn }) => {
-	return (
-		<div className='loginButton'>
-			{isLoggedIn ? (<UserInfo />) : (<GoogleLoginButton />)}
-		</div>
-	);
-};
-
-const UserInfo = () => {
-	return <h2>Welcome!</h2>;
-};
+export const GOOGLE_LOGIN_URI = 'https://accounts.google.com/o/oauth2/v2/auth?client_id=49458879196-a90b39d0o0bgh9d08cfu87mtms23lap8.apps.googleusercontent.com&redirect_uri=http://localhost:8080/api/auth/members&response_type=code&scope=profile%20email&access_type=offline';
 
 const GoogleLoginButton = () => {
 	const handleButtonClick = () => {
-		window.location.href = LOGIN_URI;
+		window.location.href = GOOGLE_LOGIN_URI;
 	};
 
 	return (
@@ -39,4 +27,4 @@ const GoogleLoginButton = () => {
 	);
 };
 
-export default LoginButton;
+export default GoogleLoginButton;

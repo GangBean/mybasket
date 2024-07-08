@@ -1,8 +1,9 @@
 import React from "react";
 import Cookies from "js-cookie";
-import LoginButton from "./Login";
+import LoginButton from "./LoginButton";
 
 const UserInfo = ({ isLoggedIn, memberImageUrl, memberEmail, memberName }) => {
+    console.log("[USERINFO]" + isLoggedIn);
     return (
         <div className="userInfo">
             {isLoggedIn ?
