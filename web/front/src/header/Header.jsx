@@ -2,13 +2,17 @@ import React from "react";
 import Logo from "./Logo";
 import SearchBar from "./searchBar/SearchBar";
 import UserInfo from "./userInfo/UserInfo";
+import { HOME_URL } from "../App";
 
-const Header = () => {
+const IMAGE_URL = "/images/logo.jpg";
+
+const Header = ({ isLoggedIn }) => {
+    console.log("[HEADER]" + isLoggedIn);
     return (
         <div className="header">
-            <Logo />
+            <Logo imageUrl={IMAGE_URL} logoUrl={HOME_URL}/>
             <SearchBar />
-            <UserInfo />
+            <UserInfo isLoggedIn={isLoggedIn} />
         </div>
     );
 };

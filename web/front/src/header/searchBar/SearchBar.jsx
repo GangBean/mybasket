@@ -33,7 +33,7 @@ const SearchButton = ({ searchValue, onSubmit }) => {
     };
 
     return (
-        <button className="searchButton" onClick={handleClick}></button>
+        <button className="searchButton" onClick={handleClick}>검색</button>
     );
 };
 

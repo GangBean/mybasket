@@ -17,7 +17,7 @@ const LogoLink = ( {logoUrl} ) => {
 
 const LogoImage = ( {imageUrl} ) => {
     return (
-        <img className='logoImage' src={imageUrl}></img>
+        <img className='logoImage' src={imageUrl}  alt="Logo" style={{ width: '20px', height: '20px' }}></img>
     );
 };
 
