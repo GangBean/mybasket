@@ -13,6 +13,10 @@ export const Pages = {
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [memberInfo, setMemberInfo] = useState({
+    email: "test@test.com",
+    name: "test",
+  });
   const [page, setPage] = useState(Pages.MAIN);
 
   useEffect(() => getSessionState(setIsLoggedIn), []);
@@ -34,7 +38,7 @@ function App() {
     <>
       <PageButton page={page} setPage={setPage} />
       <Header isLoggedIn={isLoggedIn}></Header>
-      <Body isLoggedIn={isLoggedIn} state={page}></Body>
+      <Body isLoggedIn={isLoggedIn} memberInfo={memberInfo} state={page}></Body>
       <Footer isLoggedIn={isLoggedIn}></Footer>
     </>
   )
