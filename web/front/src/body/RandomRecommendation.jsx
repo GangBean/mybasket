@@ -1,14 +1,11 @@
-import React, { useState } from "react";
-import MyRecipe from "./MyRecipe";
-import MoreButton from "./MoreButton";
+import React from "react";
+import RecipesBox from "./RecipesBox";
 
 const RandomRecommendation = ({ getNext }) => {
-    const [myRecipes, setMyRecipes] = useState(getNext());
     return (
         <div className="randomRecommendation">
             <RandomRecommendationTitle></RandomRecommendationTitle>
-            <MyRecipes myRecipes={myRecipes}></MyRecipes>
-            <MoreButton recipes={myRecipes} setRecipes={setMyRecipes} getNext={getNext}></MoreButton>
+            <RecipesBox getNext={getNext}></RecipesBox>
         </div>
     );
 };
@@ -18,14 +15,6 @@ const RandomRecommendationTitle = () => {
         <div className="randomRecommendationTitle">
             <h2>색다른 레시피</h2>
         </div>
-    );
-};
-
-const MyRecipes = ({ myRecipes }) => {
-    return (
-        <ol className="myRecipes">
-            {myRecipes.map(myRecipe => <MyRecipe key={myRecipe.id} myRecipe={myRecipe}></MyRecipe>)}
-        </ol>
     );
 };
 

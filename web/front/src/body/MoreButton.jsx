@@ -1,9 +1,9 @@
 import React from "react";
 
-const MoreButton = ({ recipes, setRecipes, getNext }) => {
+const MoreButton = ({ items, setItems, getNext }) => {
     const handleClick = () => {
-        const nextRecipes = getNext();
-        setRecipes([...recipes, ...nextRecipes]);
+        const nextItems = getNext();
+        setItems([...items, ...nextItems]);
     };
 
     return (

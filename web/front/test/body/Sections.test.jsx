@@ -9,10 +9,10 @@ describe("Sections component test", () => {
 
         expect(container.querySelector(".memberHistory")).toBeInTheDocument();
     });
-    test("로그아웃 상태일때 MyRecipesBox component를 포함하지 않습니다.", () => {
+    test("로그아웃 상태일때 RecipesBox component를 포함하지 않습니다.", () => {
         const { container } = render(<Sections isLoggedIn={false}></Sections>);
 
-        expect(container.querySelector(".myRecipesBox")).not.toBeInTheDocument();
+        expect(container.querySelector(".myRecipesBox").querySelector(".recipesBox")).not.toBeInTheDocument();
     });
     test("YesterdayRanking component를 포함합니다.", () => {
         const { container } = render(<Sections></Sections>);

@@ -4,10 +4,10 @@ import { fireEvent, render } from "@testing-library/react";
 import MemberHistory from "../../src/body/MemberHistory";
 
 describe("MemberHistory component test", () => {
-    test("MyRecipes component를 갖습니다.", () => {
+    test("MyRecipesBox component를 갖습니다.", () => {
         const { container } = render(<MemberHistory isLoggedIn={true} getNext={() => []}></MemberHistory>);
 
-        expect(container.querySelector(".myRecipes")).toBeInTheDocument();
+        expect(container.querySelector(".myRecipesBox")).toBeInTheDocument();
     });
     test("MoreButton component를 갖습니다.", () => {
         const { container } = render(<MemberHistory isLoggedIn={true} getNext={() => []}></MemberHistory>);
@@ -25,10 +25,10 @@ describe("MemberHistory component test", () => {
 
         const moreButton = container.querySelector(".moreButton");
         
-        const prevLength = container.querySelector(".myRecipes").querySelectorAll("li").length;
+        const prevLength = container.querySelector(".recipes").querySelectorAll("li").length;
 
         await fireEvent.click(moreButton);
-        const recipes = container.querySelector(".myRecipes").querySelectorAll("li");
+        const recipes = container.querySelector(".recipes").querySelectorAll("li");
 
         expect(recipes.length - prevLength).toBe(10);
     });

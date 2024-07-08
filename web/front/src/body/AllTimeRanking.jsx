@@ -9,7 +9,7 @@ const AllTimeRanking = ({ getNext }) => {
         <div className="allTimeRanking">
             <AllTimeRankingTitle></AllTimeRankingTitle>
             <RankingRecipes recipes={recipes}></RankingRecipes>
-            <MoreButton recipes={recipes} setRecipes={setRecipes} getNext={getNext}></MoreButton>
+            <MoreButton items={recipes} setItems={setRecipes} getNext={getNext}></MoreButton>
         </div>
     );
 };
@@ -20,6 +20,6 @@ const AllTimeRankingTitle = () => {
             <h2>베스트 레시피</h2>
         </div>
     );
-}
+};
 
 export default AllTimeRanking;

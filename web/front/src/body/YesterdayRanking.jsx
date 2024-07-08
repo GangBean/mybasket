@@ -8,7 +8,7 @@ const YesterdayRanking = ({ getNext }) => {
         <div className="yesterdayRanking">
             <YesterdayRankingTitle></YesterdayRankingTitle>
             <RankingRecipes recipes={recipes}></RankingRecipes>
-            <MoreButton recipes={recipes} setRecipes={setRecipes} getNext={getNext}></MoreButton>
+            <MoreButton items={recipes} setItems={setRecipes} getNext={getNext}></MoreButton>
         </div>
     );
 };

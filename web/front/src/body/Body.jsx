@@ -4,15 +4,15 @@ import LoginPage from "./LoginPage";
 import MyPage from "./MyPage";
 import { Pages } from "../App";
 
-const Body = ({ state, isLoggedIn }) => {
+const Body = ({ state, isLoggedIn, memberInfo }) => {
     return (
         <div className="body">
-            {componentOfState(state, isLoggedIn)}
+            {componentOfState(state, isLoggedIn, memberInfo)}
         </div>
     );
 };
 
-const componentOfState = (state, isLoggedIn) => {
+const componentOfState = (state, isLoggedIn, memberInfo) => {
     if (state === Pages.MAIN) {
         return (
             <MainPage isLoggedIn={isLoggedIn}></MainPage>
@@ -25,7 +25,7 @@ const componentOfState = (state, isLoggedIn) => {
     }
     if (state === Pages.MY_PAGE) {
         return (
-            <MyPage></MyPage>
+            <MyPage isLoggedIn={isLoggedIn} memberInfo={memberInfo}></MyPage>
         );
     }
     throw new InvalidPageStateError(state);
