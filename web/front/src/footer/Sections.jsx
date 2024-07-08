@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import BasketSection from "./BasketSection";
 import RecommendationSection from "./RecommendationSection";
 
 const Sections = ({ isLoggedIn }) => {
+    const [myBaskets, setMyBaskets] = useState([]);
+
     return (
         <div className="sections">
-            <BasketSection isLoggedIn={isLoggedIn} />
-            <RecommendationSection isLoggedIn={isLoggedIn}/>
+            <BasketSection isLoggedIn={isLoggedIn} myBaskets={myBaskets} />
+            <RecommendationSection isLoggedIn={isLoggedIn} />
         </div>
     );
 };

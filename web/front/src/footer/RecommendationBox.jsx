@@ -36,7 +36,7 @@ const RecommendationButton = ({ budget, onSubmit }) => {
     };
 
     return (
-        <button className="recommendationButton" onClick={handleClick}></button>
+        <button className="recommendationButton" onClick={handleClick}>추천받기</button>
     );
 };
 

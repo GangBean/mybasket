@@ -1,5 +1,5 @@
 import React from "react";
-import LoginButton from "../header/userInfo/Login";
+import LoginButton from "../header/userInfo/LoginButton";
 import RecommendationBox from "./RecommendationBox";
 
 const RecommendationSection = ({ isLoggedIn }) => {
