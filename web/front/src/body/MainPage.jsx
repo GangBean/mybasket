@@ -1,10 +1,10 @@
 import React from "react";
 import Sections from "./Sections";
 
-const MainPage = () => {
+const MainPage = ({ isLoggedIn }) => {
     return (
         <div className="mainPage">
-            <Sections></Sections>
+            <Sections isLoggedIn={isLoggedIn}></Sections>
         </div>
     );
 };

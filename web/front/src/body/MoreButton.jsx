@@ -7,7 +7,7 @@ const MoreButton = ({ recipes, setRecipes, getNext }) => {
     };
 
     return (
-        <button className="moreButton" onClick={handleClick}></button>
+        <button className="moreButton" onClick={handleClick}>더보기</button>
     );
 };
 

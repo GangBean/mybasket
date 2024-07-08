@@ -4,7 +4,7 @@ import RankingRecipe from "./RankingRecipe";
 const RankingRecipes = ({ recipes }) => {
     return (
         <ol className="rankingRecipes">
-            {recipes.map(recipe => <RankingRecipe key={recipe.recipeId} recipe={recipe}></RankingRecipe>)}
+            {recipes.map((recipe, ranking) => <RankingRecipe key={recipe.id} recipe={recipe} ranking={ranking}></RankingRecipe>)}
         </ol>
     );
 };

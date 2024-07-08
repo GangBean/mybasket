@@ -3,15 +3,15 @@ import MainPage from "./MainPage";
 import LoginPage from "./LoginPage";
 import MyPage from "./MyPage";
 
-const Body = ({ state }) => {
+const Body = ({ state, isLoggedIn }) => {
     return (
         <div className="body">
-            {componentOfState(state)}
+            {componentOfState(state, isLoggedIn)}
         </div>
     );
 }
 
-const componentOfState = (state) => {
+const componentOfState = (state, isLoggedIn) => {
     const Pages = {
         MAIN: "main",
         LOGIN: "login",
@@ -19,7 +19,7 @@ const componentOfState = (state) => {
     };
     if (state === Pages.MAIN) {
         return (
-            <MainPage></MainPage>
+            <MainPage isLoggedIn={isLoggedIn}></MainPage>
         );
     }
     if (state === Pages.LOGIN) {

@@ -5,16 +5,16 @@ import RandomRecommendation from "../../src/body/RandomRecommendation";
 
 describe("RandomRecommendation component test", () => {
     test("MyRecipes component를 갖습니다.", () => {
-        const { container } = render(<RandomRecommendation></RandomRecommendation>);
+        const { container } = render(<RandomRecommendation getNext={()=>[]}></RandomRecommendation>);
 
         expect(container.querySelector(".myRecipes")).toBeInTheDocument();
     });
     test("MoreButton component를 갖습니다.", () => {
-        const { container } = render(<RandomRecommendation></RandomRecommendation>);
+        const { container } = render(<RandomRecommendation getNext={()=>[]}></RandomRecommendation>);
 
         expect(container.querySelector(".moreButton")).toBeInTheDocument();
     });
-    test("더보기 버튼을 누르면 한번에 최대 10개의 레시피가 추가됩니다.", async () => {
+    test("더보기 버튼을 누르면 레시피가 추가됩니다.", async () => {
         const testValue = Array.from({ length: 10 }).map((_, x) => { return { myRecipeId: x }; });
         console.log(testValue);
         const getNext = () => {
@@ -24,9 +24,10 @@ describe("RandomRecommendation component test", () => {
         const { container } = render(<RandomRecommendation getNext={getNext}></RandomRecommendation>);
 
         const moreButton = container.querySelector(".moreButton");
+        const prevLength = container.querySelector(".myRecipes").querySelectorAll("li").length;
         await fireEvent.click(moreButton);
 
         const recipes = container.querySelector(".myRecipes").querySelectorAll("li");
-        expect(recipes.length).toBe(10);
+        expect(recipes.length - prevLength).toBe(10);
     });
 });
