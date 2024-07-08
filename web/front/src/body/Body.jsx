@@ -2,6 +2,7 @@ import React from "react";
 import MainPage from "./MainPage";
 import LoginPage from "./LoginPage";
 import MyPage from "./MyPage";
+import { Pages } from "../App";
 
 const Body = ({ state, isLoggedIn }) => {
     return (
@@ -9,14 +10,9 @@ const Body = ({ state, isLoggedIn }) => {
             {componentOfState(state, isLoggedIn)}
         </div>
     );
-}
+};
 
 const componentOfState = (state, isLoggedIn) => {
-    const Pages = {
-        MAIN: "main",
-        LOGIN: "login",
-        MyPAGE: "myPage",
-    };
     if (state === Pages.MAIN) {
         return (
             <MainPage isLoggedIn={isLoggedIn}></MainPage>

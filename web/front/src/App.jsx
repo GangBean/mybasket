@@ -4,21 +4,18 @@ import Header from './header/Header';
 import Body from './body/Body';
 import Footer from './footer/Footer';
 
-function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+export const HOME_URL = "http://localhost";
+export const Pages = {
+  MAIN: "main",
+  LOGIN: "login",
+  MyPAGE: "myPage",
+};
 
-  useEffect(() => {
-    axios.get('http://localhost:8080/api/auth/sessions', { withCredentials: true }) // 쿠키 포함 요청
-      .then(response => {
-        if (response.data.loggedIn) {
-          setIsLoggedIn(response.data.loggedIn);
-          console.log("logged in!" + response.data.loggedIn)
-        }
-      })
-      .catch(error => {
-        console.error("Error checking login status", error);
-      });
-  }, []);
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [page, setPage] = useState(Pages.MAIN);
+
+  useEffect(getSessionState, []);
 
   return (
     // <div>
@@ -35,11 +32,24 @@ function App() {
     //   </div>
     // </div>
     <>
-      <Header isLoggedIn={false}></Header>
-      <Body isLoggedIn={false} state={"main"}></Body>
-      <Footer isLoggedIn={false}></Footer>
+      <Header isLoggedIn={isLoggedIn}></Header>
+      <Body isLoggedIn={isLoggedIn} state={page}></Body>
+      <Footer isLoggedIn={isLoggedIn}></Footer>
     </>
   )
-}
+};
+
+const getSessionState = () => {
+  axios.get('http://localhost:8080/api/auth/sessions', { withCredentials: true })
+    .then(response => {
+      if (response.data.loggedIn) {
+        setIsLoggedIn(response.data.loggedIn);
+        console.log("logged in!" + response.data.loggedIn)
+      }
+    })
+    .catch(error => {
+      console.error("Error checking login status", error);
+    });
+};
 
 export default App;
