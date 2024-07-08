@@ -23,7 +23,7 @@ const componentOfState = (state, isLoggedIn) => {
             <LoginPage></LoginPage>
         );
     }
-    if (state === Pages.MyPAGE) {
+    if (state === Pages.MY_PAGE) {
         return (
             <MyPage></MyPage>
         );

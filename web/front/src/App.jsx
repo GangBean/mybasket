@@ -8,7 +8,7 @@ export const HOME_URL = "http://localhost";
 export const Pages = {
   MAIN: "main",
   LOGIN: "login",
-  MyPAGE: "myPage",
+  MY_PAGE: "myPage",
 };
 
 function App() {
@@ -32,11 +32,35 @@ function App() {
     //   </div>
     // </div>
     <>
+      <PageButton page={page} setPage={setPage} />
       <Header isLoggedIn={isLoggedIn}></Header>
       <Body isLoggedIn={isLoggedIn} state={page}></Body>
       <Footer isLoggedIn={isLoggedIn}></Footer>
     </>
   )
+};
+
+const PageButton = ({ page, setPage }) => {
+  const handleChange = (event) => {
+    setPage(event.target.value);
+  };
+
+  return (
+    <form>
+      <label>
+        <input type='radio' value={Pages.MAIN} checked={page===Pages.MAIN} onChange={handleChange}></input>
+        MAIN
+      </label>
+      <label>
+        <input type='radio' value={Pages.LOGIN} checked={page===Pages.LOGIN} onChange={handleChange}></input>
+        LOGIN
+      </label>
+      <label>
+        <input type='radio' value={Pages.MY_PAGE} checked={page===Pages.MY_PAGE} onChange={handleChange}></input>
+        MY_PAGE
+      </label>
+    </form>
+  );
 };
 
 const getSessionState = () => {
