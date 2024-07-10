@@ -1,5 +1,6 @@
 import React from "react";
 import RankingRecipe from "./RankingRecipe";
+import "./RankingRecipes.css";
 
 const RankingRecipes = ({ recipes }) => {
     return (

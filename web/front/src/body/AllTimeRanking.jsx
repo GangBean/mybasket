@@ -1,23 +1,15 @@
 import React from "react";
 import { useState } from "react";
-import RankingRecipes from "./RankingRecipes";
-import MoreButton from "./MoreButton";
+import AllTimeRankingBox from "./AllTimeRankingBox";
+import "./AllTimeRanking.css";
+import AllTimeRankingTitle from "./AllTimeRaningTitle";
 
 const AllTimeRanking = ({ getNext }) => {
     const [recipes, setRecipes] = useState(getNext());
     return (
         <div className="allTimeRanking">
             <AllTimeRankingTitle></AllTimeRankingTitle>
-            <RankingRecipes recipes={recipes}></RankingRecipes>
-            <MoreButton items={recipes} setItems={setRecipes} getNext={getNext}></MoreButton>
-        </div>
-    );
-};
-
-const AllTimeRankingTitle = () => {
-    return (
-        <div className="allTimeRankingTitle">
-            <h2>베스트 레시피</h2>
+            <AllTimeRankingBox recipes={recipes} setRecipes={setRecipes} getNext={getNext}></AllTimeRankingBox>
         </div>
     );
 };
