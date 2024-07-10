@@ -23,8 +23,8 @@ const MyDislikedRecipe = ({ recipe }) => {
         <div className="myDislikedRecipe">
             <div className="id" hidden={true}>{recipe.id}</div>
             <div className="recipeId" hidden={true}>{recipe.recipeId}</div>
-            <img src={recipe.imageUrl} alt="recipeImage"></img>
-            <a href={recipe.recipeUrl}>{recipe.name}</a>
+            <img className="image" src={recipe.imageUrl} alt="recipeImage" style={{width: '100px', height: '100px'}}></img>
+            <a className="name" href={recipe.recipeUrl}>{recipe.name}</a>
         </div>
     );
 };

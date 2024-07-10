@@ -3,6 +3,10 @@ import MyBasketsBox from "./MyBasketsBox";
 import MyRecommendedRecipesBox from "./MyRecommendedRecipesBox";
 import MyLikedRecipesBox from "./MyLikedRecipesBox";
 import MyDislikedRecipesBox from "./MyDislikedRecipesBox";
+import { MyBasketModel } from "./MyBasket";
+import { MyRecommendedRecipeModel } from "./MyRecommendedRecipe";
+import { MyLikedRecipeModel } from "./MyLikedRecipe";
+import { MyDislikedRecipeModel } from "./MyDislikedRecipe";
 
 const Tab = {
     INFO: 'info',
@@ -71,19 +75,46 @@ const RecommendationTab = () => {
 };
 
 const getNextMyBaskets = () => {
-    return [];
+    return [
+        new MyBasketModel(1, new Date(), 50000, 5, 3, 48000),
+    ];
 };
 
 const getNextMyRecommendedRecipes = () => {
-    return [];
+    return [
+        new MyRecommendedRecipeModel(
+            1, new Date(), 1,
+            "일본가정식, 서양에는 없는 일본의 서양파스타 나포리탄 ( ´ ▽ ` )ﾉ",
+            "https://recipe1.ezmember.co.kr/cache/recipe/2018/12/12/57ee955477765269ab191e76095d68191.jpg",
+            "https://www.10000recipe.com/recipe/6901822"
+        ),
+    ];
 };
 
 const getNextMyLikedRecipes = () => {
-    return [];
+    return [
+        new MyLikedRecipeModel(
+            1,
+            new Date(),
+            1,
+            "돼지고기 김치찌개 맛내는 비법",
+            "https://recipe1.ezmember.co.kr/cache/recipe/2015/08/25/a01d013a6b6f9d526c43f4659db2cd61.jpg",
+            "https://www.10000recipe.com/recipe/1785098"
+        ),
+    ];
 };
 
 const getNextMyDislikedRecipes = () => {
-    return [];
+    return [
+        new MyDislikedRecipeModel(
+            1,
+            new Date(),
+            1,
+            "즉석 오이무침 만드는 법, 아삭아삭 상큼한 오이무침, 밑반찬",
+            "https://recipe1.ezmember.co.kr/cache/recipe/2019/03/04/9f0011ecaaffe13ae2d4cb79c12af93a1.jpg",
+            "https://www.10000recipe.com/recipe/6907661"
+        ),
+    ];
 };
 
 export default Tabs;

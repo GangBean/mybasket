@@ -3,6 +3,7 @@ import MainPage from "./MainPage";
 import LoginPage from "./LoginPage";
 import MyPage from "./MyPage";
 import { Pages } from "../App";
+import "./Body.css";
 
 const Body = ({ state, isLoggedIn, memberInfo }) => {
     return (
@@ -34,7 +35,7 @@ const componentOfState = (state, isLoggedIn, memberInfo) => {
 class InvalidPageStateError extends Error {
     constructor(state) {
         super("정의되지 않은 페이지 상태입니다: " + state);
-    }
+    };
 };
 
 export default Body;

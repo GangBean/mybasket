@@ -1,6 +1,7 @@
 import React from "react";
 import MemberHistoryTitle from "./MemberHistoryTitle";
 import MyRecipesBox from "./MyRecipesBox";
+import "./MemberHistory.css";
 
 const MemberHistory = ({ isLoggedIn, getNext }) => {
     return (
