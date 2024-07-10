@@ -3,6 +3,7 @@ import Logo from "./Logo";
 import SearchBar from "./searchBar/SearchBar";
 import UserInfo from "./userInfo/UserInfo";
 import { HOME_URL } from "../App";
+import "./Header.css";
 
 const IMAGE_URL = "/images/logo.jpg";
 
