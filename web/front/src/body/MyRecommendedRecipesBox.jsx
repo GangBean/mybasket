@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import MyRecommendedRecipesTitle from "./MyRecommendedRecipesTitle";
 import MyRecommendedRecipes from "./MyRecommendedRecipes";
 import MoreButton from "./MoreButton";
+import "./MyRecommendedRecipesBox.css";
 
 const MyRecommendedRecipesBox = ({ getNext }) => {
     const [recipes, setRecipes] = useState(getNext());
