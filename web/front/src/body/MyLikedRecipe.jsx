@@ -25,6 +25,7 @@ const MyLikedRecipe = ({ recipe }) => {
             <div className="recipeId" hidden={true}>{recipe.recipeId}</div>
             <img className="image" src={recipe.imageUrl} alt="recipeImage" style={{width: '100px', height: '100px'}}></img>
             <a className="name" href={recipe.recipeUrl}>{recipe.name}</a>
+            <div className="reactTime">{recipe.reactTime.toLocaleString()}</div>
         </div>
     );
 };
