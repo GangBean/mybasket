@@ -4,8 +4,17 @@ const RecommendationBox = ({ onSubmit }) => {
     const [budget, setBudget] = useState(0);
     return (
         <div className="recommendationBox">
+            <RecommendationInstruction></RecommendationInstruction>
             <BudgetInput setBudget={setBudget} />
             <RecommendationButton budget={budget} onSubmit={onSubmit} />
+        </div>
+    );
+};
+
+const RecommendationInstruction = () => {
+    return (
+        <div className="recommendationInstruction">
+            <p>장바구니에 쓸 예산을 입력해 주세요: </p>
         </div>
     );
 };

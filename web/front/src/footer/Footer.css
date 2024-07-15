@@ -9,3 +9,9 @@
     background-color: rgb(228, 228, 228);
     color: darkslategray;
 }
+
+.recommendationBox {
+    display: flex;
+    justify-content: space-between; /* 아이템들을 공간을 두고 배치 */
+    align-items: center; /* 수직 가운데 정렬 */
+}
