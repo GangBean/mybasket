@@ -1,0 +1,13 @@
+.yesterdayRanking {
+    background-color: beige;
+}
+
+.yesterdayRankingTitle {
+    background-color: rgb(183, 189, 156);
+}
+
+.yesterdayRankingBox {
+    display: flex;
+    justify-content: space-between; /* 아이템들을 공간을 두고 배치 */
+    align-items: center; /* 수직 가운데 정렬 */
+}

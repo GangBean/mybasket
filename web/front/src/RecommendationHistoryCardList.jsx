@@ -37,7 +37,7 @@ const MemberRecommendationHistories = () => {
                 <RecipeCard
                     key={recipe.id}
                     id={recipe.id}
-                    recipeName={recipe.recipeName}
+                    recipeName={recipe.name}
                     recipeUrl={recipe.recipeUrl}
                     imageUrl={recipe.imageUrl}
                 />
