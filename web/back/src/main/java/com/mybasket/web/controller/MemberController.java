@@ -26,7 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost", maxAge = 3600, allowCredentials="true")
+@CrossOrigin(origins = {"http://localhost", "http://localhost:3000"}, maxAge = 3600, allowCredentials="true")
 @RestController
 @RequestMapping("/api/auth")
 public class MemberController {

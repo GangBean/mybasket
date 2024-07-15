@@ -1,7 +1,6 @@
 package com.mybasket.web.entity;
 
 import java.sql.Date;
-import java.time.LocalDateTime;
 
 import lombok.Builder;
 import lombok.Getter;

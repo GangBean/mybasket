@@ -27,6 +27,7 @@ public class RecipeRepository {
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
             return Recipe.builder()
                     .id(rs.getLong("id"))
+                    .name(rs.getString("name"))
                     .description(rs.getString("description"))
                     .recipeUrl(rs.getString("recipe_url"))
                     .imageUrl(rs.getString("image_url"))

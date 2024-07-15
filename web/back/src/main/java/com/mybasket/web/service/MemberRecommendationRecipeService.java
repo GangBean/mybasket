@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.mybasket.web.controller.response.MemberRecommendationRecipeResponse;
-import com.mybasket.web.entity.MemberRecommendationRecipe;
 import com.mybasket.web.entity.Recipe;
 import com.mybasket.web.repository.RecipeRepository;
 import com.mybasket.web.repository.member.MemberRecommendationRecipeRepository;

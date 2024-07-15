@@ -11,7 +11,7 @@ public enum Preference {
     }
 
     public static Preference of(String value) {
-        if (value == null) {
+        if (value == null || value.isBlank()) {
             throw new RuntimeException("선호도는 빈 값일 수 없습니다: " + value);
         }
         return (value.toLowerCase()=="like") ? LIKE : DISLIKE;
